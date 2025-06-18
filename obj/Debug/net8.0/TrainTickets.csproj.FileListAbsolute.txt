@@ -121,3 +121,6 @@ C:\Users\parhe\RiderProjects\TrainTickets\bin\Debug\net8.0\ru\Microsoft.CodeAnal
 C:\Users\parhe\RiderProjects\TrainTickets\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\parhe\RiderProjects\TrainTickets\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\parhe\RiderProjects\TrainTickets\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\parhe\RiderProjects\TrainTickets\bin\Debug\net8.0\AWSSDK.Core.dll
+C:\Users\parhe\RiderProjects\TrainTickets\bin\Debug\net8.0\AWSSDK.S3.dll
+C:\Users\parhe\RiderProjects\TrainTickets\obj\Debug\net8.0\TrainTickets.sourcelink.json

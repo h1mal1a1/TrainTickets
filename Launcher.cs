@@ -29,6 +29,10 @@ public class Launcher
     
     internal static int Main(string[] argc)
     {
+        S3Manager s3 = new("minioadmin", "minioadmin", "http://192.168.1.102:9000");
+        s3.Tests().Wait();
+        return 1;
+        
         ScanTickets st = new();
         var intermediateStage = st.ScanTicket(out var tickets);
         if (!intermediateStage) return -1;

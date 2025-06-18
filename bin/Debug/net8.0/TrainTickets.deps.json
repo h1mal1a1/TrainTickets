@@ -8,12 +8,32 @@
     ".NETCoreApp,Version=v8.0": {
       "TrainTickets/1.0.0": {
         "dependencies": {
+          "AWSSDK.S3": "4.0.1.7",
           "Microsoft.EntityFrameworkCore.Design": "9.0.6",
           "Microsoft.Extensions.Logging.Console": "9.0.6",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4"
         },
         "runtime": {
           "TrainTickets.dll": {}
+        }
+      },
+      "AWSSDK.Core/4.0.0.11": {
+        "runtime": {
+          "lib/net8.0/AWSSDK.Core.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.11"
+          }
+        }
+      },
+      "AWSSDK.S3/4.0.1.7": {
+        "dependencies": {
+          "AWSSDK.Core": "4.0.0.11"
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.S3.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.1.7"
+          }
         }
       },
       "Humanizer.Core/2.14.1": {
@@ -727,6 +747,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AWSSDK.Core/4.0.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-y7J/hTTtCaOFtcuHKmcNyiB6SUpOU7hH9N0HLa6ajvZoF0QdCOmOlY3r3pbddVWpZoFttOBng064HEvKOX7rtw==",
+      "path": "awssdk.core/4.0.0.11",
+      "hashPath": "awssdk.core.4.0.0.11.nupkg.sha512"
+    },
+    "AWSSDK.S3/4.0.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wZvlAVLgTPNQlFvHhacE3EOgoATx+hPKYijbubxoY5zdKm2EjKd8ucMZTvGJIzsbV7lr4aRfuu8dALCI52CH1Q==",
+      "path": "awssdk.s3/4.0.1.7",
+      "hashPath": "awssdk.s3.4.0.1.7.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
