@@ -54,9 +54,13 @@ public class Ticket
                 SeatNumber = _seatNumber,
                 Price = _price,
                 ClassType = new TrainTicketsDbContext.ClassTypes { TypeName = _type },
-                Name = new TrainTicketsDbContext.Names { Name = _name },
-                LastName = new TrainTicketsDbContext.LastNames { LastName = _lastName },
-                Patronymic = new TrainTicketsDbContext.Patronymics { Name = _patronymic },
+                User = new TrainTicketsDbContext.Users
+                {
+                    Name = new TrainTicketsDbContext.Names { Name = _name },
+                    LastName = new TrainTicketsDbContext.LastNames { LastName = _lastName },
+                    Patronymic = new TrainTicketsDbContext.Patronymics { Name = _patronymic },
+                    DateRegistration = _dateReg
+                },
                 BookingStatuse = new TrainTicketsDbContext.BookingStatuses { BookingName = _bookingStatus },
                 DepartureStation = new TrainTicketsDbContext.Stations { StationName = _from },
                 ArrivalStation = new TrainTicketsDbContext.Stations { StationName = _to }

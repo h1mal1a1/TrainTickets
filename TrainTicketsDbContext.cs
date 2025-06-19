@@ -109,7 +109,7 @@ public class TrainTicketsDbContext
     {
         public int IdName;
         public string Name;
-        public List<Registration> LstNames { get; set; } = [];
+        public List<Users> LstNames { get; set; } = [];
     }
     public class NamesConfig: IEntityTypeConfiguration<Names>
     {
@@ -140,7 +140,7 @@ public class TrainTicketsDbContext
     {
         public int IdLastName;
         public string LastName;
-        public List<Registration> LstLastNames { get; set; } = [];
+        public List<Users> LstLastNames { get; set; } = [];
     }
     public class LastNamesConfig: IEntityTypeConfiguration<LastNames>
     {
@@ -171,7 +171,7 @@ public class TrainTicketsDbContext
     {
         public int IdPatronymic;
         public string Name;
-        public List<Registration> LstPatronymics { get; set; } = [];
+        public List<Users> LstPatronymics { get; set; } = [];
     }
     public class PatronymicsConfig: IEntityTypeConfiguration<Patronymics>
     {
@@ -196,6 +196,84 @@ public class TrainTicketsDbContext
             builder
                 .HasMany(r => r.LstPatronymics)
                 .WithOne(s => s.Patronymic);
+        }
+    }
+
+    public class Users
+    {
+        public int UserId;
+        public int IdName;
+        public int IdLastName;
+        public int IdPatronymic;
+        public int PassportSeries;
+        public int PassportNumber;
+        public long INN;
+        public DateTime DateRegistration;
+        public List<Registration> LstUsers { get; set; }
+        public Names Name;
+        public LastNames LastName;
+        public Patronymics Patronymic;
+    }
+
+    public class UsersConfiguration : IEntityTypeConfiguration<Users>
+    {
+        public void Configure(EntityTypeBuilder<Users> builder)
+        {
+            builder.ToTable("Users");
+            builder.HasKey(u => u.UserId);
+            
+            builder
+                .Property(p => p.UserId)
+                .HasColumnName("Id")
+                .UseIdentityColumn()
+                .ValueGeneratedOnAdd();
+            builder
+                .Property(p => p.IdName)
+                .HasColumnName("IdName");
+            builder
+                .Property(p => p.IdLastName)
+                .HasColumnName("IdLastName");
+            builder
+                .Property(p => p.IdPatronymic)
+                .HasColumnName("IdPatronymics");
+            
+            builder.Property(p => p.PassportSeries)
+                .HasColumnName("PassportSeries")
+                .HasMaxLength(4);
+            builder.Property(p => p.PassportNumber)
+                .HasColumnName("PassportNumber")
+                .HasMaxLength(6);
+            builder.Property(p => p.INN)
+                .HasColumnName("INN")
+                .HasMaxLength(12);
+            builder.Property(p => p.DateRegistration)
+                .HasColumnName("DateRegistration");
+            
+            builder.HasIndex(p => p.UserId);
+            builder.HasIndex(p => p.PassportSeries).IsUnique();
+            builder.HasIndex(p => p.PassportNumber).IsUnique();
+            builder.HasIndex(p => p.INN).IsUnique(); 
+            
+            builder
+                .HasOne(r => r.Name)
+                .WithMany(c => c.LstNames)
+                .HasForeignKey(r => r.IdName)
+                .HasPrincipalKey(ha=>ha.IdName)
+                .IsRequired();
+            builder
+                .HasOne(r => r.LastName)
+                .WithMany(c => c.LstLastNames)
+                .HasForeignKey(r => r.IdLastName)
+                .HasPrincipalKey(ha=>ha.IdLastName)
+                .IsRequired();
+            builder
+                .HasOne(r => r.Patronymic)
+                .WithMany(c => c.LstPatronymics)
+                .HasForeignKey(r => r.IdPatronymic)
+                .HasPrincipalKey(ha=>ha.IdPatronymic)
+                .IsRequired();
+            
+            builder.HasMany(u => u.LstUsers).WithOne(r => r.User);
         }
     }
     public class Registration
@@ -224,16 +302,10 @@ public class TrainTicketsDbContext
         public int IdClassType; 
         //Статус брони(забронирован, оплачен, отменён)
         public int IdBookingStatus;
-        //Имя пассажира
-        public int IdName;
-        //Фамилия пассажира
-        public int IdLastName;
-        //Отчество пассажира
-        public int IdPatronymic;
+        //Id пассажира
+        public int IdUser;
         public ClassTypes ClassType;
-        public Names Name;
-        public LastNames LastName;
-        public Patronymics Patronymic;
+        public Users User;
         public BookingStatuses BookingStatuse;
         public Stations DepartureStation;
         public Stations ArrivalStation;
@@ -260,9 +332,7 @@ public class TrainTicketsDbContext
             builder.Property(p => p.Price).HasColumnName("Price");
             builder.Property(p => p.IdClassType).HasColumnName("IdClassType");
             builder.Property(p => p.IdBookingStatus).HasColumnName("IdBookingStatus");
-            builder.Property(p => p.IdName).HasColumnName("IdName");
-            builder.Property(p => p.IdLastName).HasColumnName("IdLastName");
-            builder.Property(p => p.IdPatronymic).HasColumnName("IdPatronymic");
+            builder.Property(p => p.IdUser).HasColumnName("IdUser");
 
             builder
                 .HasOne(r => r.ClassType)
@@ -272,24 +342,10 @@ public class TrainTicketsDbContext
                 .IsRequired();
             
             builder
-                .HasOne(r => r.Name)
-                .WithMany(c => c.LstNames)
-                .HasForeignKey(r => r.IdName)
-                .HasPrincipalKey(g=>g.IdName)
-                .IsRequired();
-            
-            builder
-                .HasOne(r => r.LastName)
-                .WithMany(c => c.LstLastNames)
-                .HasForeignKey(r => r.IdLastName)
-                .HasPrincipalKey(n=>n.IdLastName)
-                .IsRequired();
-            
-            builder
-                .HasOne(r => r.Patronymic)
-                .WithMany(c => c.LstPatronymics)
-                .HasForeignKey(r => r.IdPatronymic)
-                .HasPrincipalKey(sc => sc.IdPatronymic)
+                .HasOne(r => r.User)
+                .WithMany(c => c.LstUsers)
+                .HasForeignKey(r => r.IdUser)
+                .HasPrincipalKey(g=>g.UserId)
                 .IsRequired();
             
             builder
@@ -351,6 +407,7 @@ public class TrainTicketsDbContext
         public DbSet<Patronymics> Patronymics { get; set; }
         public DbSet<BookingStatuses> BookingStatuses { get; set; }
         public DbSet<Stations> Stations { get; set; }
+        public DbSet<Users> Users { get; set; }
         public DbSet<Registration> Registrations { get; set; }
 
         // private readonly string ConnectionString;
@@ -363,6 +420,7 @@ public class TrainTicketsDbContext
             modelBuilder.ApplyConfiguration(new PatronymicsConfig());
             modelBuilder.ApplyConfiguration(new BookingStatusesConfig());
             modelBuilder.ApplyConfiguration(new StationsConfig());
+            modelBuilder.ApplyConfiguration(new UsersConfiguration());
             modelBuilder.ApplyConfiguration(new RegistrationConfig());
             //modelBuilder.Entity<Registration>().ToTable(tb => tb.HasTrigger("Nametrigger"));
         }

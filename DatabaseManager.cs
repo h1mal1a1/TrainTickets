@@ -56,7 +56,7 @@ public class DatabaseManager
     private void AddNewLastNames()
     {
         var uniqValues = _tickets
-            .Select(ticket => ticket.LastName)
+            .Select(ticket => ticket.User.LastName)
             .DistinctBy(type => type.LastName);
         var existingValues = _dbContext.LastNames
             .Select(t => t.LastName);
@@ -69,11 +69,14 @@ public class DatabaseManager
     {
         foreach (var ticket in _tickets)
         {
-            var lastName = ticket.LastName; 
+            var lastName = ticket.User.LastName; 
             var existingLastName = _dbContext.LastNames
                 .FirstOrDefault(s => s.LastName == lastName.LastName);
             if (existingLastName != null)
-                ticket.LastName = existingLastName;
+            {
+                ticket.User.LastName = existingLastName;
+                ticket.User.IdLastName = existingLastName.IdLastName;
+            }
             else
                 Console.WriteLine($"В бд нету значения lastName:{lastName.LastName}");
         }
@@ -82,7 +85,7 @@ public class DatabaseManager
     private void AddNewNames()
     {
         var uniqValues = _tickets
-            .Select(ticket => ticket.Name)
+            .Select(ticket => ticket.User.Name)
             .DistinctBy(type => type.Name);
         var existingValues = _dbContext.Names
             .Select(t => t.Name);
@@ -95,11 +98,14 @@ public class DatabaseManager
     {
         foreach (var ticket in _tickets)
         {
-            var name = ticket.Name; 
+            var name = ticket.User.Name; 
             var existingName = _dbContext.Names
                 .FirstOrDefault(s => s.Name == name.Name);
             if (existingName != null)
-                ticket.Name = existingName;
+            {
+                ticket.User.Name = existingName;
+                ticket.User.IdName = existingName.IdName;
+            }
             else
                 Console.WriteLine($"В бд нету значения Name:{name.Name}");
         }
@@ -108,7 +114,7 @@ public class DatabaseManager
     private void AddNewPatronymics()
     {
         var uniqValues = _tickets
-            .Select(ticket => ticket.Patronymic)
+            .Select(ticket => ticket.User.Patronymic)
             .DistinctBy(type => type.Name);
         var existingValues = _dbContext.Patronymics
             .Select(t => t.Name);
@@ -121,11 +127,14 @@ public class DatabaseManager
     {
         foreach (var ticket in _tickets)
         {
-            var patronymic = ticket.Patronymic; 
+            var patronymic = ticket.User.Patronymic; 
             var existingPatronymic = _dbContext.Patronymics
                 .FirstOrDefault(s => s.Name == patronymic.Name);
             if (existingPatronymic != null)
-                ticket.Patronymic = existingPatronymic;
+            {
+                ticket.User.Patronymic = existingPatronymic;
+                ticket.User.IdPatronymic = existingPatronymic.IdPatronymic;
+            }
             else
                 Console.WriteLine($"В бд нету значения Patronymic:{patronymic.Name}");
         }
@@ -218,25 +227,35 @@ public class DatabaseManager
             _dbContext.Stations.Add(station);
     }
 
-    private void AddNewParameters()
+    private void AddNewUsers()
     {
-        AddNewClassTypes();
         AddNewPatronymics();
         AddNewNames();
         AddNewLastNames();
+    }
+
+    private void UpdateUsers()
+    {
+        UpdatePatronymicsInTickets();
+        UpdateNamesInTickets();
+        UpdateLastNamesInTickets();
+    }
+
+    private void AddNewParameters()
+    {
+        AddNewClassTypes();
         AddNewBookingStatuses();
         AddNewStations();
+        AddNewUsers();
         _dbContext.SaveChanges();
     }
     private void UpdateParameters()
     {
         UpdateClassTypesInTickets();
-        UpdatePatronymicsInTickets();
-        UpdateNamesInTickets();
-        UpdateLastNamesInTickets();
         UpdateBookingStatusesInTickets();
         UpdateDepartureStations();
         UpdateArrivalStations();
+        UpdateUsers();
     }
     
     internal bool InsertNewValues()

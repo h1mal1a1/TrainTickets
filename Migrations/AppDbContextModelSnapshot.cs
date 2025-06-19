@@ -188,17 +188,9 @@ namespace TrainTickets.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("IdDepartureStation");
 
-                    b.Property<int>("IdLastName")
+                    b.Property<int>("IdUser")
                         .HasColumnType("integer")
-                        .HasColumnName("IdLastName");
-
-                    b.Property<int>("IdName")
-                        .HasColumnType("integer")
-                        .HasColumnName("IdName");
-
-                    b.Property<int>("IdPatronymic")
-                        .HasColumnType("integer")
-                        .HasColumnName("IdPatronymic");
+                        .HasColumnName("IdUser");
 
                     b.Property<int>("Price")
                         .HasColumnType("integer")
@@ -222,11 +214,7 @@ namespace TrainTickets.Migrations
 
                     b.HasIndex("IdDepartureStation");
 
-                    b.HasIndex("IdLastName");
-
-                    b.HasIndex("IdName");
-
-                    b.HasIndex("IdPatronymic");
+                    b.HasIndex("IdUser");
 
                     b.ToTable("Registration", (string)null);
                 });
@@ -256,6 +244,68 @@ namespace TrainTickets.Migrations
                     b.ToTable("Stations", (string)null);
                 });
 
+            modelBuilder.Entity("TrainTickets.TrainTicketsDbContext+Users", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+
+                    b.Property<DateTime>("DateRegistration")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("DateRegistration");
+
+                    b.Property<long>("INN")
+                        .HasMaxLength(12)
+                        .HasColumnType("bigint")
+                        .HasColumnName("INN");
+
+                    b.Property<int>("IdLastName")
+                        .HasColumnType("integer")
+                        .HasColumnName("IdLastName");
+
+                    b.Property<int>("IdName")
+                        .HasColumnType("integer")
+                        .HasColumnName("IdName");
+
+                    b.Property<int>("IdPatronymic")
+                        .HasColumnType("integer")
+                        .HasColumnName("IdPatronymics");
+
+                    b.Property<int>("PassportNumber")
+                        .HasMaxLength(6)
+                        .HasColumnType("integer")
+                        .HasColumnName("PassportNumber");
+
+                    b.Property<int>("PassportSeries")
+                        .HasMaxLength(4)
+                        .HasColumnType("integer")
+                        .HasColumnName("PassportSeries");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("INN")
+                        .IsUnique();
+
+                    b.HasIndex("IdLastName");
+
+                    b.HasIndex("IdName");
+
+                    b.HasIndex("IdPatronymic");
+
+                    b.HasIndex("PassportNumber")
+                        .IsUnique();
+
+                    b.HasIndex("PassportSeries")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Users", (string)null);
+                });
+
             modelBuilder.Entity("TrainTickets.TrainTicketsDbContext+Registration", b =>
                 {
                     b.HasOne("TrainTickets.TrainTicketsDbContext+Stations", "ArrivalStation")
@@ -282,6 +332,25 @@ namespace TrainTickets.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TrainTickets.TrainTicketsDbContext+Users", "User")
+                        .WithMany("LstUsers")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArrivalStation");
+
+                    b.Navigation("BookingStatuse");
+
+                    b.Navigation("ClassType");
+
+                    b.Navigation("DepartureStation");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TrainTickets.TrainTicketsDbContext+Users", b =>
+                {
                     b.HasOne("TrainTickets.TrainTicketsDbContext+LastNames", "LastName")
                         .WithMany("LstLastNames")
                         .HasForeignKey("IdLastName")
@@ -299,14 +368,6 @@ namespace TrainTickets.Migrations
                         .HasForeignKey("IdPatronymic")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ArrivalStation");
-
-                    b.Navigation("BookingStatuse");
-
-                    b.Navigation("ClassType");
-
-                    b.Navigation("DepartureStation");
 
                     b.Navigation("LastName");
 
@@ -345,6 +406,11 @@ namespace TrainTickets.Migrations
                     b.Navigation("LstArrivals");
 
                     b.Navigation("LstDepartures");
+                });
+
+            modelBuilder.Entity("TrainTickets.TrainTicketsDbContext+Users", b =>
+                {
+                    b.Navigation("LstUsers");
                 });
 #pragma warning restore 612, 618
         }
