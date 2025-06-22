@@ -8,6 +8,9 @@ public class Ticket
     private readonly int _seatNumber;
     private readonly int _trainNumb;
     private readonly int _carriageNumb;
+    private readonly int _passportNumber;
+    private readonly int _passportSeries;
+    private long _inn; 
     private readonly string _from;
     private readonly string _to;
     private readonly DateTime _depTime;
@@ -20,9 +23,10 @@ public class Ticket
     private readonly string _patronymic;
     
 
-    internal Ticket(int price, int seatNumber, int trainNumber, int carriageNumb, string from, string to,
-        DateTime depTime, DateTime arrTime, string type, string bookingStatus, string name, string lastName,
-        string patronymic)
+    internal Ticket(string lastName, string name, string patronymic, int passportSeries, int passportNumber, long inn, 
+        string from, string to, string bookingStatus, string type, int trainNumber, int carriageNumb, int seatNumber,  
+        DateTime depTime, DateTime arrTime, int price
+        )
     {
         _price = price;
         _seatNumber = seatNumber;
@@ -38,6 +42,9 @@ public class Ticket
         _lastName = lastName;
         _patronymic = patronymic;
         _dateReg = DateTime.UtcNow;
+        _passportNumber = passportNumber;
+        _passportSeries = passportSeries;
+        _inn = inn;
     }
 
     internal void ConvertToRegistrationTicket(out TrainTicketsDbContext.Registration registrationTicket)
@@ -59,6 +66,9 @@ public class Ticket
                     Name = new TrainTicketsDbContext.Names { Name = _name },
                     LastName = new TrainTicketsDbContext.LastNames { LastName = _lastName },
                     Patronymic = new TrainTicketsDbContext.Patronymics { Name = _patronymic },
+                    PassportSeries = _passportSeries,
+                    PassportNumber = _passportNumber,
+                    INN = _inn,
                     DateRegistration = _dateReg
                 },
                 BookingStatuse = new TrainTicketsDbContext.BookingStatuses { BookingName = _bookingStatus },

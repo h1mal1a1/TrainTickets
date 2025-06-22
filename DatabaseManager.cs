@@ -8,19 +8,20 @@ public class DatabaseManager
     private readonly TrainTicketsDbContext.AppDbContext _dbContext = new();
     private readonly ConcurrentBag<TrainTicketsDbContext.Registration> _tickets;
     internal DatabaseManager(ConcurrentBag<TrainTicketsDbContext.Registration> tickets) => _tickets = tickets;
+
     internal bool TryOpenConnection()
     {
         try
         {
             _dbContext.Database.OpenConnection();
-            
+
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Не получилось открыть соединение с БД, по причине: {ex.Message}");
             return false;
         }
-        
+
         Console.WriteLine($"Соединение с БД открыто. Статус: {_dbContext.Database.CanConnect()}");
         return true;
     }
@@ -34,14 +35,15 @@ public class DatabaseManager
             .Select(t => t.BookingName);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.BookingName)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.BookingStatuses.AddRange(newValues);
     }
+
     private void UpdateBookingStatusesInTickets()
     {
         foreach (var ticket in _tickets)
         {
-            var status = ticket.BookingStatuse; 
+            var status = ticket.BookingStatuse;
             var existingStatus = _dbContext.BookingStatuses
                 .FirstOrDefault(s => s.BookingName == status.BookingName);
             if (existingStatus != null)
@@ -49,7 +51,7 @@ public class DatabaseManager
             else
                 Console.WriteLine($"В бд нету значения status:{status.BookingName}");
         }
-        
+
 
     }
 
@@ -62,14 +64,15 @@ public class DatabaseManager
             .Select(t => t.LastName);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.LastName)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.LastNames.AddRange(newValues);
     }
+
     private void UpdateLastNamesInTickets()
     {
         foreach (var ticket in _tickets)
         {
-            var lastName = ticket.User.LastName; 
+            var lastName = ticket.User.LastName;
             var existingLastName = _dbContext.LastNames
                 .FirstOrDefault(s => s.LastName == lastName.LastName);
             if (existingLastName != null)
@@ -91,14 +94,15 @@ public class DatabaseManager
             .Select(t => t.Name);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.Name)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.Names.AddRange(newValues);
     }
+
     private void UpdateNamesInTickets()
     {
         foreach (var ticket in _tickets)
         {
-            var name = ticket.User.Name; 
+            var name = ticket.User.Name;
             var existingName = _dbContext.Names
                 .FirstOrDefault(s => s.Name == name.Name);
             if (existingName != null)
@@ -120,14 +124,15 @@ public class DatabaseManager
             .Select(t => t.Name);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.Name)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.Patronymics.AddRange(newValues);
     }
+
     private void UpdatePatronymicsInTickets()
     {
         foreach (var ticket in _tickets)
         {
-            var patronymic = ticket.User.Patronymic; 
+            var patronymic = ticket.User.Patronymic;
             var existingPatronymic = _dbContext.Patronymics
                 .FirstOrDefault(s => s.Name == patronymic.Name);
             if (existingPatronymic != null)
@@ -149,14 +154,15 @@ public class DatabaseManager
             .Select(t => t.TypeName);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.TypeName)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.ClassTypes.AddRange(newValues);
     }
+
     private void UpdateClassTypesInTickets()
     {
         foreach (var ticket in _tickets)
         {
-            var classType = ticket.ClassType; 
+            var classType = ticket.ClassType;
             var existingClassType = _dbContext.ClassTypes
                 .FirstOrDefault(s => s.TypeName == classType.TypeName);
             if (existingClassType != null)
@@ -165,6 +171,7 @@ public class DatabaseManager
                 Console.WriteLine($"В бд нету значения ClassType:{classType.TypeName}");
         }
     }
+
     private void AddNewArrivalStations()
     {
         var uniqValues = _tickets
@@ -174,14 +181,15 @@ public class DatabaseManager
             .Select(t => t.StationName);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.StationName)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.Stations.AddRange(newValues);
     }
+
     private void UpdateArrivalStations()
     {
         foreach (var ticket in _tickets)
         {
-            var arrivalStation = ticket.ArrivalStation; 
+            var arrivalStation = ticket.ArrivalStation;
             var existingStation = _dbContext.Stations
                 .FirstOrDefault(s => s.StationName == arrivalStation.StationName);
             if (existingStation != null)
@@ -190,6 +198,7 @@ public class DatabaseManager
                 Console.WriteLine($"В бд нету значения ArrivalStation:{arrivalStation.StationName}");
         }
     }
+
     private void AddNewDepartureStations()
     {
         var uniqValues = _tickets
@@ -199,14 +208,15 @@ public class DatabaseManager
             .Select(t => t.StationName);
         var newValues = uniqValues
             .Where(cl => !existingValues.Contains(cl.StationName)).ToList();
-        if(newValues.Count != 0)
+        if (newValues.Count != 0)
             _dbContext.Stations.AddRange(newValues);
     }
+
     private void UpdateDepartureStations()
     {
         foreach (var ticket in _tickets)
         {
-            var departureStation = ticket.DepartureStation; 
+            var departureStation = ticket.DepartureStation;
             var existingStation = _dbContext.Stations
                 .FirstOrDefault(s => s.StationName == departureStation.StationName);
             if (existingStation != null)
@@ -215,6 +225,7 @@ public class DatabaseManager
                 Console.WriteLine($"В бд нету значения DepartureStation:{departureStation.StationName}");
         }
     }
+
     private void AddNewStations()
     {
         var allStations = _tickets
@@ -229,12 +240,54 @@ public class DatabaseManager
 
     private void AddNewUsers()
     {
+        var uniqValues = _tickets
+            .Select(ticket => ticket.User)
+            .DistinctBy(user => new {user.PassportSeries, user.PassportNumber, user.INN});
+        var existingValues = _dbContext.Users
+            .Select(user => new { user.PassportSeries, user.PassportNumber, user.INN })
+            .AsEnumerable()// Переключаемся на клиентскую оценку
+            .Select(x=>(x.PassportSeries,x.PassportNumber,x.INN))// переводим в ValueTuple
+            .ToHashSet();
+        List<TrainTicketsDbContext.Users> newValues;
+        try
+        {
+            newValues = uniqValues
+                .Where(cl => !existingValues.Contains((cl.PassportSeries, cl.PassportNumber, cl.INN))).ToList();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Возникла ошибка при получении не содержащихся в БД пользователей: {ex.Message}");
+            return;
+        }
+        if (newValues.Count != 0)
+            _dbContext.Users.AddRange(newValues);
+    }
+
+private void AddNewUsersParameters()
+    {
         AddNewPatronymics();
         AddNewNames();
         AddNewLastNames();
     }
 
     private void UpdateUsers()
+    {
+        foreach (var ticket in _tickets)
+        {
+            var user = ticket.User;
+            var existingUser = _dbContext.Users
+                .FirstOrDefault(existUser => existUser.PassportNumber == user.PassportNumber &&
+                                             existUser.PassportSeries == user.PassportSeries &&
+                                             existUser.INN == user.INN);
+            if (existingUser != null)
+                ticket.User = existingUser;
+            else
+                Console.WriteLine($"В бд нету значения пользователя с данными(" +
+                                  $"{user.PassportSeries}{user.PassportNumber},{user.INN})");
+        }
+    }
+    private void UpdateUsersParameters()
     {
         UpdatePatronymicsInTickets();
         UpdateNamesInTickets();
@@ -246,6 +299,7 @@ public class DatabaseManager
         AddNewClassTypes();
         AddNewBookingStatuses();
         AddNewStations();
+        AddNewUsersParameters();
         AddNewUsers();
         _dbContext.SaveChanges();
     }
@@ -255,6 +309,7 @@ public class DatabaseManager
         UpdateBookingStatusesInTickets();
         UpdateDepartureStations();
         UpdateArrivalStations();
+        UpdateUsersParameters();
         UpdateUsers();
     }
     
